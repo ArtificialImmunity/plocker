@@ -7,11 +7,11 @@ It is a Linux command line password locker. It creates a user based on your Linu
 
 Installation:
 
+`sudo apt-get install python python-dev python-pip build-essential libffi-dev libssl-dev git`
+
 `git clone https://github.com/ArtificialImmunity/plocker/`
 
 `cd plocker`
-
-`sudo apt-get install python python-dev python-pip build-essential libffi-dev libssl-dev`
 
 `pip install -r requirements`
 

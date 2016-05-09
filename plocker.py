@@ -284,6 +284,7 @@ def changePassword():
 			key=sha256(newPass).digest()
 			updateUser(hashpw(newPass,gensalt()))
 		else: print ("\n[-] Failed, passwords do not match")
+	else: print ("\n[-] Invalid Password")
 	return
 
 def updateUser(passwordHash):

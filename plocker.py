@@ -157,8 +157,8 @@ def menu():
 				else: validChoice=True
 			#Allow for Ctrl+C
 			except KeyboardInterrupt:
-				print ()
-				sys.exit()
+				print ("\n")
+				exit()
 			#Catch everything else
 			except:
 				print ("\n\n[-] Error, invalid choice\n\n")
@@ -229,8 +229,8 @@ def removeEntry():
 			else: validChoice=True
 		#Allow for Ctrl+C
 		except KeyboardInterrupt:
-			print ()
-			sys.exit()
+			print ("\n")
+			exit()
 		#Catch everything else
 		except:
 			print ("\n\n[-] Error, invalid choice")
@@ -265,8 +265,8 @@ def listPass():
 			else: validChoice=True
 		#Allow for Ctrl+C
 		except KeyboardInterrupt:
-			print ()
-			sys.exit()
+			print ("\n")
+			exit()
 		#Catch everything else
 		except:
 			print ("\n\n[-] Error, invalid choice")

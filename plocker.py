@@ -129,51 +129,6 @@ def decryptSecrets():
 		pass
 	return
 
-def printMenu():
-	print ("\nPlease select one of the following:")
-	print ("[0] - List Available Passwords")
-	print ("[1] - Add a Password")
-	print ("[2] - Remove a Password")
-	print ("[3] - Change Encryption/Login Password")
-	print ("[4] - Exit")
-
-
-def menu():
-	"""
-	Display the menu
-	"""
-	numberOfChoices=4
-	while True:
-		validChoice=False
-		while not validChoice:
-			#print ("Key = " + key)
-			printMenu()
-			try:
-				choice=int(input("Choice: "))
-				if choice<0 or choice>numberOfChoices:
-					print ("\n\n[-] Error, invalid choice\n\n")
-				else: validChoice=True
-			#Allow for Ctrl+C
-			except KeyboardInterrupt:
-				print ("\n")
-				exit()
-			#Catch everything else
-			except:
-				print ("\n\n[-] Error, invalid choice\n\n")
-	
-		if choice==0:
-			listPass()
-		elif choice==1:
-			addEntry()
-		elif choice==2:
-			removeEntry()
-		elif choice==3:
-			changePassword()
-		elif choice==4:
-			exit()
-		else: print("You shouldn't be here")	
-	return
-
 def listPasses():
 	#Parse holder for passwords 
 	print ("\n")
@@ -185,29 +140,31 @@ def listPasses():
 
 def listPass():
 	numberOfChoices=(len(HOLDER)-1)
-	validChoice=False
-	while not validChoice:
-		listPasses()
-		print ("\n[*] Seclect password to retrieve full details (press 'Q' to return to main menu)")
-		try:
-			choice=raw_input("Choice: ")
-			if choice == 'q' or choice == 'Q':
-				validChoice=True
-			elif int(choice)<0 or int(choice)>numberOfChoices:
+	if numberOfChoices>=0:
+		validChoice=False
+		while not validChoice:
+			listPasses()
+			print ("\n[*] Seclect password to retrieve full details (press 'Q' to return to main menu)")
+			try:
+				choice=raw_input("Choice: ")
+				if choice == 'q' or choice == 'Q':
+					validChoice=True
+				elif int(choice)<0 or int(choice)>numberOfChoices:
+					print ("\n\n[-] Error, invalid choice")
+				else: validChoice=True
+			#Allow for Ctrl+C
+			except KeyboardInterrupt:
+				print ("\n")
+				exit()
+			#Catch everything else
+			except:
 				print ("\n\n[-] Error, invalid choice")
-			else: validChoice=True
-		#Allow for Ctrl+C
-		except KeyboardInterrupt:
-			print ("\n")
-			exit()
-		#Catch everything else
-		except:
-			print ("\n\n[-] Error, invalid choice")
-	if choice.isdigit():
-		print ("\nTitle: " + HOLDER[int(choice)]['Title'])
-		print ("Description: " + HOLDER[int(choice)]['Description'])
-		print ("Username: " + HOLDER[int(choice)]['Username'])
-		print ("Password: " + HOLDER[int(choice)]['Password'])
+		if choice.isdigit():
+			print ("\nTitle: " + HOLDER[int(choice)]['Title'])
+			print ("Description: " + HOLDER[int(choice)]['Description'])
+			print ("Username: " + HOLDER[int(choice)]['Username'])
+			print ("Password: " + HOLDER[int(choice)]['Password'])
+	else: print ("\n[-] Currently zero passwords in Locker")
 	return
 
 def addEntry():
@@ -302,6 +259,50 @@ def updateUser(passwordHash):
 		print ("\n[+] Sucessfully Updated")
 	except IOError:
 		print ("\n[-] Error writing to file: " + USER_FILE)
+	return
+
+def printMenu():
+	print ("\nPlease select one of the following:")
+	print ("[0] - List Available Passwords")
+	print ("[1] - Add a Password")
+	print ("[2] - Remove a Password")
+	print ("[3] - Change Encryption/Login Password")
+	print ("[4] - Exit")
+
+def menu():
+	"""
+	Display the menu
+	"""
+	numberOfChoices=4
+	while True:
+		validChoice=False
+		while not validChoice:
+			#print ("Key = " + key)
+			printMenu()
+			try:
+				choice=int(input("Choice: "))
+				if choice<0 or choice>numberOfChoices:
+					print ("\n\n[-] Error, invalid choice\n\n")
+				else: validChoice=True
+			#Allow for Ctrl+C
+			except KeyboardInterrupt:
+				print ("\n")
+				exit()
+			#Catch everything else
+			except:
+				print ("\n\n[-] Error, invalid choice\n\n")
+	
+		if choice==0:
+			listPass()
+		elif choice==1:
+			addEntry()
+		elif choice==2:
+			removeEntry()
+		elif choice==3:
+			changePassword()
+		elif choice==4:
+			exit()
+		else: print("You shouldn't be here")	
 	return
 
 def Main():

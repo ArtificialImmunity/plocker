@@ -57,7 +57,7 @@ def validate():
 	passwordGuess=hashpw(inputp,passwordHash)
 	if loginName == username and passwordGuess == passwordHash:
 		key=sha256(inputp).digest()
-		retrieveEntries()
+		decryptSecrets()
 		return True
 	else:
 		return False
@@ -65,7 +65,7 @@ def login():
 	loginName=whoami()
 	print ("Login: " + loginName)
 	if validate():
-		print ("[+] Successful Login")
+		print ("\n[+] Successful Login")
 		return True
 	else:
 		print ("[-] Failed Login")
@@ -124,7 +124,7 @@ def decryptSecrets():
 		
 			HOLDER=loads(buff.getvalue())	#unpack the pickled data
 	except IOError:
-		print ("[-] Failed to read .secrets file")
+		print ("\n[-] Failed to read .secrets file")
 		print (" *if this is your first time, make an entry to populate")
 	except:
 		print ("[-] Failed to Decrypt")
@@ -164,7 +164,7 @@ def menu():
 				print ("\n\n[-] Error, invalid choice\n\n")
 	
 		if choice==0:
-			listPasses()
+			listPass()
 		elif choice==1:
 			addEntry()
 		elif choice==2:
@@ -178,7 +178,7 @@ def menu():
 
 def listPasses():
 	#Parse holder for passwords 
-	print("\n")
+	print ("\n")
 	count=0
 	for i in HOLDER:
 		print "["+str(count)+"] - "+i['Title']
@@ -193,7 +193,16 @@ def addEntry():
 		'Description':'',
 		'Username':'',
 		'Password':''}
-	entry['Title']=raw_input("Enter Title: ")
+	entryFree=False
+	entryTitle=''
+	while not entryFree:
+		entryFree=True
+		entryTitle=raw_input("Enter Title: ")
+		for i in HOLDER:
+			if i['Title'] == entryTitle:
+				print "[-] Password Title exists, please choose another name"
+				entryFree=False
+	entry['Title']=entryTitle
 	entry['Description']=raw_input("Enter Description: ")
 	entry['Username']=raw_input("Enter Username: ")
 	entry['Password']=getpass()
@@ -201,14 +210,35 @@ def addEntry():
 	encryptSecrets()
 	decryptSecrets()
 	print ("[+] Successfully created")
-	#print ("\nAdding Entries is coming soon")
 	return
 def removeEntry():
 	"""
 	Update the HOLDER and write it to .secrets 
 	"""
-	#Remove an entry from HOLDER
-	print ("\nRemoving Entries is coming soon")
+	numberOfChoices=(len(HOLDER)-1)
+	validChoice=False
+	while not validChoice:
+		listPasses()
+		print ("\n[*] Seclect password to remove (press 'Q' to return to main menu)")
+		try:
+			choice=raw_input("Choice: ")
+			if choice == 'q' or choice == 'Q':
+				validChoice=True
+			elif int(choice)<0 or int(choice)>numberOfChoices:
+				print ("\n\n[-] Error, invalid choice")
+			else: validChoice=True
+		#Allow for Ctrl+C
+		except KeyboardInterrupt:
+			print ()
+			sys.exit()
+		#Catch everything else
+		except:
+			print ("\n\n[-] Error, invalid choice")
+	if choice.isdigit():
+		del HOLDER[int(choice)]
+		encryptSecrets()
+		decryptSecrets()
+		print ("\n[+] Successfully deleted entry")
 	return
 def changePassword():
 	"""
@@ -219,15 +249,32 @@ def changePassword():
 	#Re-encryp file
 	print ("\nPassword Change is coming soon")
 	return
-def retrieveEntries():
-	"""
-	After sucessful login, unencrypt pass file and store in HOLDER 
-	"""
-	#After decrypt, store in dict format
-	decryptSecrets()
-	return
 
 def listPass():
+	numberOfChoices=(len(HOLDER)-1)
+	validChoice=False
+	while not validChoice:
+		listPasses()
+		print ("\n[*] Seclect password to retrieve full details (press 'Q' to return to main menu)")
+		try:
+			choice=raw_input("Choice: ")
+			if choice == 'q' or choice == 'Q':
+				validChoice=True
+			elif int(choice)<0 or int(choice)>numberOfChoices:
+				print ("\n\n[-] Error, invalid choice")
+			else: validChoice=True
+		#Allow for Ctrl+C
+		except KeyboardInterrupt:
+			print ()
+			sys.exit()
+		#Catch everything else
+		except:
+			print ("\n\n[-] Error, invalid choice")
+	if choice.isdigit():
+		print ("\nTitle: " + HOLDER[int(choice)]['Title'])
+		print ("Description: " + HOLDER[int(choice)]['Description'])
+		print ("Username: " + HOLDER[int(choice)]['Username'])
+		print ("Password: " + HOLDER[int(choice)]['Password'])
 	return
 
 def Main():

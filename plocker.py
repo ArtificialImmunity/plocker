@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from os.path import isdir,isfile,abspath,expanduser,getsize,splitext
-from os import chmod,mkdir
+from os import chmod,mkdir,urandom
 from getpass import getuser as whoami
 from getpass import getpass
 from sys import exit
@@ -76,7 +76,7 @@ def encryptSecrets():
 	"""
 	n=16
 	buff=StringIO()#	make buffer
-	iv=''.join(chr(randint(0,0xFF)) for i in range(16))#	make iv value
+	iv=urandom(n)	#make iv value
 	dump(HOLDER,buff)	#add pickled data to rest of buffer
 	buff.seek(0)	#go to beginning of buffer
 	encryptor = AES.new(key,AES.MODE_CBC,iv)	#make encryptor
@@ -125,7 +125,7 @@ def decryptSecrets():
 		print ("\n[-] Failed to read .secrets file")
 		print (" *if this is your first time, make an entry to populate")
 	except:
-		print ("[-] Failed to Decrypt")
+		print ("\n[-] Failed to Decrypt")
 		pass
 	return
 
@@ -235,7 +235,7 @@ def addEntry():
 	HOLDER.append(entry)
 	encryptSecrets()
 	decryptSecrets()
-	print ("[+] Successfully created")
+	print ("\n[+] Successfully created")
 	return
 
 def removeEntry():

@@ -42,7 +42,7 @@ def createUser():
 		print ("[+] Successfully created user '"+username+"'")
 	except IOError:
 		print ("[-] Error writing to file: " + USER_FILE + " - Make sure user doesn't already exist")
-	return
+	return	
 
 def validate():
 	global key
@@ -57,7 +57,6 @@ def validate():
 	passwordGuess=hashpw(inputp,passwordHash)
 	if loginName == username and passwordGuess == passwordHash:
 		key=sha256(inputp).digest()
-		decryptSecrets()
 		return True
 	else:
 		return False
@@ -99,7 +98,6 @@ def encryptSecrets():
 	with open(DB_FILE,'w+') as f:
 		f.write(edata)	#write encrypted data
 	return
-
 
 
 def decryptSecrets():
@@ -184,6 +182,34 @@ def listPasses():
 		print "["+str(count)+"] - "+i['Title']
 		count+=1
 	return
+
+def listPass():
+	numberOfChoices=(len(HOLDER)-1)
+	validChoice=False
+	while not validChoice:
+		listPasses()
+		print ("\n[*] Seclect password to retrieve full details (press 'Q' to return to main menu)")
+		try:
+			choice=raw_input("Choice: ")
+			if choice == 'q' or choice == 'Q':
+				validChoice=True
+			elif int(choice)<0 or int(choice)>numberOfChoices:
+				print ("\n\n[-] Error, invalid choice")
+			else: validChoice=True
+		#Allow for Ctrl+C
+		except KeyboardInterrupt:
+			print ("\n")
+			exit()
+		#Catch everything else
+		except:
+			print ("\n\n[-] Error, invalid choice")
+	if choice.isdigit():
+		print ("\nTitle: " + HOLDER[int(choice)]['Title'])
+		print ("Description: " + HOLDER[int(choice)]['Description'])
+		print ("Username: " + HOLDER[int(choice)]['Username'])
+		print ("Password: " + HOLDER[int(choice)]['Password'])
+	return
+
 def addEntry():
 	"""
 	Update the HOLDER and write it to .secrets 
@@ -211,6 +237,7 @@ def addEntry():
 	decryptSecrets()
 	print ("[+] Successfully created")
 	return
+
 def removeEntry():
 	"""
 	Update the HOLDER and write it to .secrets 
@@ -240,46 +267,46 @@ def removeEntry():
 		decryptSecrets()
 		print ("\n[+] Successfully deleted entry")
 	return
+
 def changePassword():
 	"""
 	Change the encryption password
 	"""
-	#Enter pass,
-	#Enter new pass twice
-	#Re-encryp file
-	print ("\nPassword Change is coming soon")
+	global key
+	
+	print ("[*] Enter current password")
+	if validate():
+		print ("[*] Enter new password")
+		newPass=getpass()
+		print ("[*] Enter new password again")
+		newPassConfirm=getpass()
+		if newPass == newPassConfirm:
+			key=sha256(newPass).digest()
+			updateUser(hashpw(newPass,gensalt()))
+		else: print ("\n[-] Failed, passwords do not match")
 	return
 
-def listPass():
-	numberOfChoices=(len(HOLDER)-1)
-	validChoice=False
-	while not validChoice:
-		listPasses()
-		print ("\n[*] Seclect password to retrieve full details (press 'Q' to return to main menu)")
-		try:
-			choice=raw_input("Choice: ")
-			if choice == 'q' or choice == 'Q':
-				validChoice=True
-			elif int(choice)<0 or int(choice)>numberOfChoices:
-				print ("\n\n[-] Error, invalid choice")
-			else: validChoice=True
-		#Allow for Ctrl+C
-		except KeyboardInterrupt:
-			print ("\n")
-			exit()
-		#Catch everything else
-		except:
-			print ("\n\n[-] Error, invalid choice")
-	if choice.isdigit():
-		print ("\nTitle: " + HOLDER[int(choice)]['Title'])
-		print ("Description: " + HOLDER[int(choice)]['Description'])
-		print ("Username: " + HOLDER[int(choice)]['Username'])
-		print ("Password: " + HOLDER[int(choice)]['Password'])
+def updateUser(passwordHash):
+	try:
+		username=whoami()
+		chmod(USER_FILE,0600)
+		with open(USER_FILE, 'w+'):
+			pass
+		with open(USER_FILE, 'w+') as f:
+			userData=username+":"+passwordHash
+			f.write(userData)
+		chmod(USER_FILE,0400) #create one user then block write permissions
+		encryptSecrets()
+		decryptSecrets()
+		print ("\n[+] Sucessfully Updated")
+	except IOError:
+		print ("\n[-] Error writing to file: " + USER_FILE)
 	return
 
 def Main():
 	if isfile(USER_FILE):
-		if login():
+		if login():			
+			decryptSecrets()
 			menu()
 	else:
 		print("[-] Can't find existing user, please create one")

@@ -1,16 +1,18 @@
 #!/usr/bin/env python
-from bcrypt import hashpw, gensalt
-from getpass import getuser as whoami
-from getpass import getpass
 from os.path import isdir,isfile,abspath,expanduser,getsize,splitext
 from os import chmod,mkdir
+from getpass import getuser as whoami
+from getpass import getpass
 from sys import exit
-from struct import pack,unpack,calcsize
-import StringIO, pickle
-from random import randint
 
-from hashlib import sha256
+from StringIO import StringIO
+from pickle import dump,loads
+from struct import pack,unpack,calcsize
+
 from Crypto.Cipher import AES
+from bcrypt import hashpw, gensalt
+from hashlib import sha256
+from random import randint
 
 HOME_DIR=expanduser('~')+'/'
 LOCKER_DIR=HOME_DIR+'.Locker/'
@@ -74,9 +76,9 @@ def encryptSecrets():
 	Encrypts data with key value
 	"""
 	n=16
-	buff=StringIO.StringIO()#	make buffer
+	buff=StringIO()#	make buffer
 	iv=''.join(chr(randint(0,0xFF)) for i in range(16))#	make iv value
-	pickle.dump(HOLDER,buff)	#add pickled data to rest of buffer
+	dump(HOLDER,buff)	#add pickled data to rest of buffer
 	buff.seek(0)	#go to beginning of buffer
 	encryptor = AES.new(key,AES.MODE_CBC,iv)	#make encryptor
 	edata=''	#init encrypted data holder
@@ -106,7 +108,7 @@ def decryptSecrets():
 	information and saves it to the holder
 	
 	"""
-	buff=StringIO.StringIO()	#Start new buffer for reading in encrypted data
+	buff=StringIO()	#Start new buffer for reading in encrypted data
 	global HOLDER
 	try:
 		with open(DB_FILE, 'rb') as f:	#open file
@@ -120,7 +122,7 @@ def decryptSecrets():
 				#decrypt data and write to new buffer
 				buff.write(decryptor.decrypt(chunk).split(b'\x00')[0])
 		
-			HOLDER=pickle.loads(buff.getvalue())	#unpack the pickled data
+			HOLDER=loads(buff.getvalue())	#unpack the pickled data
 	except IOError:
 		print ("[-] Failed to read .secrets file")
 		print (" *if this is your first time, make an entry to populate")

@@ -92,11 +92,15 @@ def encryptSecrets():
 
 	for d in data:
 		edata+=encryptor.encrypt(d)	#encrypt that mofo
-
-	with open(DB_FILE,'w+'):	#empty file for new write (TODO:need to make .tmp file)
-		pass
-	with open(DB_FILE,'w+') as f:
-		f.write(edata)	#write encrypted data
+	try:
+		chmod(DB_FILE,0600)
+		with open(DB_FILE,'w+'):	#empty file for new write (TODO:need to make .tmp file)
+			pass
+		with open(DB_FILE,'w+') as f:
+			f.write(edata)	#write encrypted data
+		chmod(DB_FILE,0400)
+	except:
+		print ("\n\n[-] Error encrypting data\n\n")
 	return
 
 
@@ -109,6 +113,7 @@ def decryptSecrets():
 	buff=StringIO()	#Start new buffer for reading in encrypted data
 	global HOLDER
 	try:
+		chmod(DB_FILE,0400)
 		with open(DB_FILE, 'rb') as f:	#open file
 			iv = f.read(16)	#get the iv val (first 16 bytes)
 			decryptor = AES.new(key, AES.MODE_CBC, iv)	#start decryptor

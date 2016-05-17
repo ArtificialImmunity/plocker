@@ -180,19 +180,25 @@ def addEntry():
 	entryTitle=''
 	while not entryFree:
 		entryFree=True
-		entryTitle=raw_input("Enter Title: ")
+		entryTitle=raw_input("[*] Enter Title: ")
 		for i in HOLDER:
 			if i['Title'] == entryTitle:
 				print "[-] Password Title exists, please choose another name"
 				entryFree=False
 	entry['Title']=entryTitle
-	entry['Description']=raw_input("Enter Description: ")
-	entry['Username']=raw_input("Enter Username: ")
-	entry['Password']=getpass()
-	HOLDER.append(entry)
-	encryptSecrets()
-	decryptSecrets()
-	print ("\n[+] Successfully created")
+	entry['Description']=raw_input("[*] Enter Description: ")
+	entry['Username']=raw_input("[*] Enter Username: ")
+	print ("[*] Enter password")
+	newPass=getpass()
+	print ("[*] Enter password again")
+	newPassConfirm=getpass()
+	if newPass == newPassConfirm:
+		entry['Password']=newPass
+		HOLDER.append(entry)
+		encryptSecrets()
+		decryptSecrets()
+		print ("\n[+] Successfully created")
+	else: print ("\n[-] Failed, passwords do not match")
 	return
 
 def removeEntry():

@@ -14,21 +14,14 @@ from bcrypt import hashpw, gensalt
 from hashlib import sha256
 from random import randint
 
+
 HOME_DIR=expanduser('~')+'/'
 LOCKER_DIR=HOME_DIR+'.Locker/'
 USER_FILE=LOCKER_DIR+'.secret.p'
 DB_FILE=LOCKER_DIR+'.secrets'
 
 HOLDER=[]
-key=sha256('').digest()
-
-try:
-	if not isdir(LOCKER_DIR):
-		mkdir(LOCKER_DIR,0700)
-except:
-	print ("[-] Error accessing .Locker, exiting")
-	exit()
-		
+key=sha256('').digest()		
 
 def createUser():
 	username=whoami()
@@ -317,6 +310,12 @@ def menu():
 	return
 
 def Main():
+	try:
+		if not isdir(LOCKER_DIR):
+			mkdir(LOCKER_DIR,0700)
+	except:
+		print ("[-] Error accessing .Locker, exiting")
+		exit()
 	if isfile(USER_FILE):
 		if login():			
 			decryptSecrets()

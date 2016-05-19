@@ -11,7 +11,7 @@ Installation:
 
 `cd plocker`
 
-`sudo apt-get install $(cat dependencies)`
+`sudo apt-get install -y $(cat dependencies)`
 
 `pip install -r requirements`
 

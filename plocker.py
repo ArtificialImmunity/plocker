@@ -247,9 +247,11 @@ def changePassword():
 	
 	print ("[*] Enter current password")
 	if validate():
-		print ("[*] Enter new password")
+		stdout.write("[*] Enter ")
+		stdout.flush()
 		newPass=getpass()
-		print ("[*] Enter new password again")
+		stdout.write("[*] Confirm ")
+		stdout.flush()
 		newPassConfirm=getpass()
 		if newPass == newPassConfirm:
 			key=sha256(newPass).digest()

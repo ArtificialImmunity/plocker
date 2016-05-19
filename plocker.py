@@ -60,6 +60,7 @@ def login():
 		print ("\n[+] Successful Login")
 		try:
 			if not isfile(DB_FILE):
+				print ("[!] .secrects file doesn't exist, creating a new one..")
 				with open(DB_FILE,'a'):
 					utime(DB_FILE,None)
 				encryptSecrets()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from os.path import isdir,isfile,abspath,expanduser,getsize,splitext
-from os import chmod,mkdir,urandom,utime
+from os import chmod,mkdir,urandom
 from getpass import getuser as whoami
 from getpass import getpass
 from sys import exit
@@ -60,8 +60,7 @@ def login():
 		print ("\n[+] Successful Login")
 		try:
 			if not isfile(DB_FILE):
-				with open(DB_FILE,'a'):
-					utime(DB_FILE,None)
+				encryptSecrets()
 			chmod(DB_FILE,0400)
 		except:
 			print ("[-] Error creating .secrets file")

@@ -35,13 +35,6 @@ def createUser():
 		print ("[+] Successfully created user '"+username+"'")
 	except IOError:
 		print ("[-] Error writing to file: " + USER_FILE + " - Make sure user doesn't already exist")
-	try:
-		if not isfile(DB_FILE):
-			with open(DB_FILE,'a'):
-				utime(DB_FILE,None)
-		chmod(DB_FILE,0400)
-	except:
-		print ("[-] Error creating .secrets file")
 	return	
 
 def validate():
@@ -65,6 +58,13 @@ def login():
 	print ("Login: " + loginName)
 	if validate():
 		print ("\n[+] Successful Login")
+		try:
+			if not isfile(DB_FILE):
+				with open(DB_FILE,'a'):
+					utime(DB_FILE,None)
+			chmod(DB_FILE,0400)
+		except:
+			print ("[-] Error creating .secrets file")
 		return True
 	else:
 		print ("[-] Failed Login")

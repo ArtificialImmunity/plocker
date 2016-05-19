@@ -3,7 +3,7 @@ from os.path import isdir,isfile,abspath,expanduser,getsize,splitext
 from os import chmod,mkdir,urandom,utime
 from getpass import getuser as whoami
 from getpass import getpass
-from sys import exit
+from sys import stdout
 
 from StringIO import StringIO
 from pickle import dump,loads
@@ -60,7 +60,8 @@ def login():
 		print ("\n[+] Successful Login")
 		try:
 			if not isfile(DB_FILE):
-				utime(DB_FILE,None)
+				with open(DB_FILE,'a'):
+					utime(DB_FILE,None)
 				encryptSecrets()
 			chmod(DB_FILE,0400)
 		except:
@@ -193,9 +194,11 @@ def addEntry():
 	entry['Title']=entryTitle
 	entry['Description']=raw_input("[*] Enter Description: ")
 	entry['Username']=raw_input("[*] Enter Username: ")
-	print ("[*] Enter password")
+	stdout.write("[*] Enter ")
+	stdout.flush()
 	newPass=getpass()
-	print ("[*] Enter password again")
+	stdout.write("[*] Confirm ")
+	stdout.flush()
 	newPassConfirm=getpass()
 	if newPass == newPassConfirm:
 		entry['Password']=newPass

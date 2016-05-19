@@ -1,0 +1,7 @@
+python
+python-dev
+python-pip
+build-essential
+libffi-dev
+libssl-dev
+git
